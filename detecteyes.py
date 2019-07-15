@@ -1,12 +1,9 @@
 from __future__ import print_function
 import cv2 as cv
 import argparse
-import flappy
 
 
 def detectAndDisplay(frame):
-    flappy.eyes_detected = False
-
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     frame_gray = cv.equalizeHist(frame_gray)
 
@@ -28,14 +25,19 @@ def detectAndDisplay(frame):
 
             #如果camera没有标出眼睛的两个圆圈（必须同时存在两个蓝色的圆圈）
             #如何判断出我的眼睛已经被识别出来了？
-            flappy.eyes_detected = True
+            # flappy.eyes_detected = True
 
         #-- detect smile
         # smile = smileCascade.detectMultiScale(frame_gray, scaleFactor=1.5, minNeighbors=15, minSize=(25, 25))
         # for (xx, yy, ww, hh) in smile:
         #     cv.rectangle(frame, (xx, yy), (xx + ww, yy + hh), (0, 255, 0), 2)
+        cv.imshow('Capture - Face detection', frame)
 
-    cv.imshow('Capture - Face detection', frame)
+        if eyes is not None:
+            print("true")
+            return True
+    print("false")
+    return False
 
 
 parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -69,7 +71,7 @@ if not cap.isOpened:
     print('--(!)Error opening video capture')
     exit(0)
 
-# # 运行代码如下
+# 运行代码如下
 # while True:
 #     ret, frame = cap.read()
 #     if frame is None:

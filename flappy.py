@@ -7,7 +7,7 @@ from pygame.locals import *
 
 import detecteyes
 
-FPS = 30
+FPS = 10
 SCREENWIDTH = 288
 SCREENHEIGHT = 512
 # gap between upper and lower part of pipe
@@ -51,7 +51,11 @@ PIPES_LIST = (
     'assets/sprites/pipe-red.png',
 )
 
-# ---------------------------------------------------------------
+
+
+
+
+
 
 try:
     xrange
@@ -60,10 +64,10 @@ except NameError:
 
 
 def main():
-    global SCREEN, FPSCLOCK, eyes_detected
+    global SCREEN, FPSCLOCK
 
     pygame.init()  # initialize pygame
-    eyes_detected = False
+
     FPSCLOCK = pygame.time.Clock()  # control when to run a loop
     SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))  #create a screen
 
@@ -142,11 +146,12 @@ def main():
             getHitmask(IMAGES['player'][2]),
         )
 
-
-
         movementInfo = showWelcomeAnimation()  #返回'playery'（player所在位置）,'basex'（base图像所在位置） 'playerIndexGen'（飞行姿势index）
         crashInfo = mainGame(movementInfo)
         showGameOverScreen(crashInfo)
+
+
+
 
 
 
@@ -177,8 +182,8 @@ def showWelcomeAnimation():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            if eyes_detected == False:
-            #if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+            #if eyes_detected == False:
+            if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
                 # make first flap sound and return values for mainGame
                 SOUNDS['wing'].play()
                 return {
@@ -247,28 +252,38 @@ def mainGame(movementInfo):
 
     while True:
 
-
-        # 运行摄像头的代码 --- 识别脸部眼睛
+        # # 运行摄像头的代码 --- 识别脸部眼睛
         ret, detecteyes.frame = detecteyes.cap.read()
         if detecteyes.frame is None:
             print('--(!) No captured frame -- Break!')
             break
-        detecteyes.detectAndDisplay(detecteyes.frame)
+        eyes_detected = detecteyes.detectAndDisplay(detecteyes.frame)
 
         if detecteyes.cv.waitKey(5) == 27:
             break
+
+        if eyes_detected == False:
+
+            # if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+            if playery > -2 * IMAGES['player'][0].get_height():
+                playerVelY = playerFlapAcc
+                playerFlapped = True
+                SOUNDS['wing'].play()
 
 
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            if eyes_detected == False:
-            #if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
-                if playery > -2 * IMAGES['player'][0].get_height():
-                    playerVelY = playerFlapAcc
-                    playerFlapped = True
-                    SOUNDS['wing'].play()
+            # if eyes_detected == False:
+            #
+            # # if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+            #     if playery > -2 * IMAGES['player'][0].get_height():
+            #         playerVelY = playerFlapAcc
+            #         playerFlapped = True
+            #         SOUNDS['wing'].play()
+
+
 
         # check for crash here
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},
@@ -353,6 +368,8 @@ def mainGame(movementInfo):
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+        eyes_detected = False
+
 
 def showGameOverScreen(crashInfo):
     """crashes the player down ans shows gameover image"""
@@ -379,8 +396,8 @@ def showGameOverScreen(crashInfo):
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            if eyes_detected == False:
-            #if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+            #if eyes_detected == False:
+            if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
                 if playery + playerHeight >= BASEY - 1:
                     return
 
