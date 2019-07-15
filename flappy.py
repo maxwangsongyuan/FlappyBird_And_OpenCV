@@ -7,7 +7,7 @@ from pygame.locals import *
 
 import detecteyes
 
-FPS = 10
+FPS = 30
 SCREENWIDTH = 288
 SCREENHEIGHT = 512
 # gap between upper and lower part of pipe

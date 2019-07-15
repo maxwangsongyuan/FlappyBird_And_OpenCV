@@ -23,9 +23,9 @@ def detectAndDisplay(frame):
             #frame会在camera上圈出眼睛的位置
             frame = cv.circle(frame, eye_center, radius, (255, 0, 0), 4)
 
-            #如果camera没有标出眼睛的两个圆圈（必须同时存在两个蓝色的圆圈）
-            #如何判断出我的眼睛已经被识别出来了？
-            # flappy.eyes_detected = True
+            if eyes is not None:
+                print("true")
+                return True
 
         #-- detect smile
         # smile = smileCascade.detectMultiScale(frame_gray, scaleFactor=1.5, minNeighbors=15, minSize=(25, 25))
@@ -33,9 +33,10 @@ def detectAndDisplay(frame):
         #     cv.rectangle(frame, (xx, yy), (xx + ww, yy + hh), (0, 255, 0), 2)
         cv.imshow('Capture - Face detection', frame)
 
-        if eyes is not None:
-            print("true")
-            return True
+        # if eyes is not None:
+        #     print("true")
+        #     return True
+
     print("false")
     return False
 
