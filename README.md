@@ -1,4 +1,4 @@
-FlapPyBird
+FlappyBird + OpenCV
 ===============
 
 A Flappy Bird Clone made using [python-pygame][pygame]
@@ -10,7 +10,7 @@ A Flappy Bird Clone made using [python-pygame][pygame]
 ScreenShot
 ----------
 
-![Flappy Bird](screenshot1.png)
+![image](https://user-images.githubusercontent.com/42976623/61191969-0ac54c00-a6e3-11e9-9f32-7cfeaff25a7e.png)
 
 [pygame]: http://www.pygame.org
 [pipenv]: https://pipenv.readthedocs.io/en/latest/
