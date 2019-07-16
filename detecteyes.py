@@ -16,6 +16,7 @@ def detectAndDisplay(frame):
 
         #-- In each face, detect eyes
         #detectmultiscale比对摄像头里的脸和数据库的脸
+        #analyse if the image contains face/faces using the dataset
         eyes = eyes_cascade.detectMultiScale(faceROI)
         for (x2,y2,w2,h2) in eyes:
             eye_center = (x + x2 + w2//2, y + y2 + h2//2)
@@ -73,6 +74,7 @@ if not cap.isOpened:
     exit(0)
 
 # 运行代码如下
+# the code runs from here
 # while True:
 #     ret, frame = cap.read()
 #     if frame is None:

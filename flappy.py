@@ -7,15 +7,20 @@ from pygame.locals import *
 
 import detecteyes
 
+
 FPS = 30
 SCREENWIDTH = 288
 SCREENHEIGHT = 512
 # gap between upper and lower part of pipe
-PIPEGAPSIZE = 100
+PIPEGAPSIZE = 200
 # coordinate starts at the top left corner
 BASEY = SCREENHEIGHT * 0.79
 # image, sound and hitmask  dicts
 IMAGES, SOUNDS, HITMASKS = {}, {}, {}
+
+
+FPSCLOCK = pygame.time.Clock()  # control when to run a loop
+SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))  #create a screen
 
 # list of all possible players (tuple of 3 positions of flap)
 PLAYERS_LIST = (
@@ -52,107 +57,10 @@ PIPES_LIST = (
 )
 
 
-
-
-
-
-
 try:
     xrange
 except NameError:
     xrange = range
-
-
-def main():
-    global SCREEN, FPSCLOCK
-
-    pygame.init()  # initialize pygame
-
-    FPSCLOCK = pygame.time.Clock()  # control when to run a loop
-    SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))  #create a screen
-
-
-    pygame.display.set_caption('Flappy Bird')
-
-    # numbers sprites for score display
-    # 在pygame中可以使用pygame.image.load（）函数来加载位图 （支持jpg,png,gif,bmp,pcx,tif,tga等多种图片格式）。
-    # convert_alpha()方法会使用透明的方法绘制前景对象。
-
-    IMAGES['numbers'] = (
-        pygame.image.load('assets/sprites/0.png').convert_alpha(),
-        pygame.image.load('assets/sprites/1.png').convert_alpha(),
-        pygame.image.load('assets/sprites/2.png').convert_alpha(),
-        pygame.image.load('assets/sprites/3.png').convert_alpha(),
-        pygame.image.load('assets/sprites/4.png').convert_alpha(),
-        pygame.image.load('assets/sprites/5.png').convert_alpha(),
-        pygame.image.load('assets/sprites/6.png').convert_alpha(),
-        pygame.image.load('assets/sprites/7.png').convert_alpha(),
-        pygame.image.load('assets/sprites/8.png').convert_alpha(),
-        pygame.image.load('assets/sprites/9.png').convert_alpha()
-    )
-
-    # game over sprite
-    IMAGES['gameover'] = pygame.image.load('assets/sprites/gameover.png').convert_alpha()
-    # message sprite for welcome screen
-    IMAGES['message'] = pygame.image.load('assets/sprites/message.png').convert_alpha()
-    # base (ground) sprite
-    IMAGES['base'] = pygame.image.load('assets/sprites/base.png').convert_alpha()
-
-    # sounds
-    if 'win' in sys.platform:
-        soundExt = '.wav'
-    else:
-        soundExt = '.ogg'
-
-    SOUNDS['die']    = pygame.mixer.Sound('assets/audio/die' + soundExt)
-    SOUNDS['hit']    = pygame.mixer.Sound('assets/audio/hit' + soundExt)
-    SOUNDS['point']  = pygame.mixer.Sound('assets/audio/point' + soundExt)
-    SOUNDS['swoosh'] = pygame.mixer.Sound('assets/audio/swoosh' + soundExt)
-    SOUNDS['wing']   = pygame.mixer.Sound('assets/audio/wing' + soundExt)
-
-    while True:
-        # select random background sprites
-        #可以考虑改成function
-        randBg = random.randint(0, len(BACKGROUNDS_LIST) - 1)
-        IMAGES['background'] = pygame.image.load(BACKGROUNDS_LIST[randBg]).convert()
-
-        # select random player sprites
-        # 可以考虑改成function
-        randPlayer = random.randint(0, len(PLAYERS_LIST) - 1)
-        IMAGES['player'] = (
-            pygame.image.load(PLAYERS_LIST[randPlayer][0]).convert_alpha(),
-            pygame.image.load(PLAYERS_LIST[randPlayer][1]).convert_alpha(),
-            pygame.image.load(PLAYERS_LIST[randPlayer][2]).convert_alpha(),
-        )
-
-        # select random pipe sprites
-        pipeindex = random.randint(0, len(PIPES_LIST) - 1)
-        IMAGES['pipe'] = (
-            pygame.transform.flip(
-                pygame.image.load(PIPES_LIST[pipeindex]).convert_alpha(), False, True),
-            pygame.image.load(PIPES_LIST[pipeindex]).convert_alpha(),
-        )
-
-        # hismask for pipes
-        HITMASKS['pipe'] = (
-            getHitmask(IMAGES['pipe'][0]),
-            getHitmask(IMAGES['pipe'][1]),
-        )
-
-        # hitmask for player
-        HITMASKS['player'] = (
-            getHitmask(IMAGES['player'][0]),
-            getHitmask(IMAGES['player'][1]),
-            getHitmask(IMAGES['player'][2]),
-        )
-
-        movementInfo = showWelcomeAnimation()  #返回'playery'（player所在位置）,'basex'（base图像所在位置） 'playerIndexGen'（飞行姿势index）
-        crashInfo = mainGame(movementInfo)
-        showGameOverScreen(crashInfo)
-
-
-
-
 
 
 def showWelcomeAnimation():
@@ -209,7 +117,7 @@ def showWelcomeAnimation():
         SCREEN.blit(IMAGES['base'], (basex, BASEY))
 
         pygame.display.update()
-        FPSCLOCK.tick(FPS)#循环应该多长时间运行一次
+        FPSCLOCK.tick(FPS)  #set when should the loop restart
 
 
 def mainGame(movementInfo):
@@ -252,38 +160,26 @@ def mainGame(movementInfo):
 
     while True:
 
-        # # 运行摄像头的代码 --- 识别脸部眼睛
+        # use camera to detect eyes
         ret, detecteyes.frame = detecteyes.cap.read()
         if detecteyes.frame is None:
             print('--(!) No captured frame -- Break!')
             break
-        eyes_detected = detecteyes.detectAndDisplay(detecteyes.frame)
-
         if detecteyes.cv.waitKey(5) == 27:
             break
 
-        if eyes_detected == False:
+        eyes_detected = detecteyes.detectAndDisplay(detecteyes.frame)
 
-            # if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+        if eyes_detected == False:
             if playery > -2 * IMAGES['player'][0].get_height():
                 playerVelY = playerFlapAcc
                 playerFlapped = True
                 SOUNDS['wing'].play()
 
-
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            # if eyes_detected == False:
-            #
-            # # if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
-            #     if playery > -2 * IMAGES['player'][0].get_height():
-            #         playerVelY = playerFlapAcc
-            #         playerFlapped = True
-            #         SOUNDS['wing'].play()
-
-
 
         # check for crash here
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},
@@ -456,7 +352,6 @@ def getRandomPipe():
         {'x': pipeX, 'y': gapY + PIPEGAPSIZE}, # lower pipe
     ]
 
-
 def showScore(score):
     """displays score in center of screen"""
     scoreDigits = [int(x) for x in list(str(score))]
@@ -470,7 +365,6 @@ def showScore(score):
     for digit in scoreDigits:
         SCREEN.blit(IMAGES['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.1))
         Xoffset += IMAGES['numbers'][digit].get_width()
-
 
 def checkCrash(player, upperPipes, lowerPipes):
     """returns True if player collders with base or pipes."""
@@ -532,5 +426,5 @@ def getHitmask(image):
             mask[x].append(bool(image.get_at((x,y))[3]))
     return mask
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
