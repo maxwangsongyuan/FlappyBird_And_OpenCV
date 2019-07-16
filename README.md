@@ -1,7 +1,7 @@
 FlappyBird + OpenCV
 ===============
 
-A Flappy Bird Clone made using [python-pygame][pygame]
+A Flappy Bird Clone made using [python-pygame][pygame] (credit to https://github.com/sourabhv/FlapPyBird)
 
 1.Intended to expand on flappy bird game by making the bird fly through eye blinking.
 
