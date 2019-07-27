@@ -44,9 +44,11 @@ def detectAndDisplay(frame):
 
 parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
 parser.add_argument('--face_cascade', help='Path to face cascade.',
-                    default='C:\\Users\\13332\\PycharmProjects\\opencv2\\data\\haarcascades\\haarcascade_frontalface_alt.xml')
+                    default='C:/Users/wangs/PycharmProjects/opencv/data/haarcascades/haarcascade_frontalface_alt.xml')
+#clone opencv to your computer and change to the path where the data is stored
 parser.add_argument('--eyes_cascade', help='Path to eyes cascade.',
-                    default='C:\\Users\\13332\\PycharmProjects\\opencv2\\data\\haarcascades\\haarcascade_eye_tree_eyeglasses.xml')
+                    default='C:/Users/wangs/PycharmProjects/opencv/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml')
+#clone opencv to your computer and change to the path where the data is stored
 parser.add_argument('--camera', help='Camera devide number.', type=int, default=0)
 args = parser.parse_args()
 
