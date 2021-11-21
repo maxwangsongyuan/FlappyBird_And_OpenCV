@@ -5,7 +5,7 @@ A Flappy Bird Clone made using [python-pygame][pygame] (source: https://github.c
 
 1.Intended to expand on flappy bird game by making the bird fly through eye blinking.
 
-2.Incorported opencv's facial recognition dataset 
+2.Incorported opencv's facial recognition dataset (source: https://docs.opencv.org/3.4/db/d28/tutorial_cascade_classifier.html)
 
 How to play the game
 ===============
@@ -23,3 +23,4 @@ ScreenShot
 
 [pygame]: http://www.pygame.org
 [pipenv]: https://pipenv.readthedocs.io/en/latest/
+
